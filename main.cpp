@@ -7,6 +7,8 @@
  * 
  * Send user defined buffer as packet, using pcap_sendpacket()
  * Find attacker(=you)'s MAC information (@google)
+ * 
+ * Copyright © 2018 James Sung. All rights reserved.
  */
 /*----------------------------------------------------------------------*/
 
