@@ -1,10 +1,13 @@
 all: send_arp
 
-main.o: main.cpp
-	gcc -c -g -o main.o main.cpp
+functions.o: functions.h functions.cpp
+	g++ -c -g -o functions.o functions.cpp
 
-send_arp: main.o
-	gcc -g -o send_arp main.o
+main.o: functions.h main.cpp
+	g++ -c -g -o main.o main.cpp
+
+send_arp: main.o functions.o
+	g++ -g -o send_arp main.o functions.o
 
 clean:
 	rm -f *.o

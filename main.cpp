@@ -13,12 +13,8 @@
 /*----------------------------------------------------------------------*/
 
 
-#include <stdio.h>
-#include <stdint.h>
-#include <pcap/pcap.h>
+#include "functions.h"
 
-
-void usage(void);
 
 int main(int argc, char *argv[])
 {
@@ -31,13 +27,5 @@ int main(int argc, char *argv[])
 	printf("Running Program...\n\n");
 
 	return 0;
-}
-
-void usage(void)
-{
-	printf("syntax: send_arp <interface> <sender ip> <target ip>\n");
-	printf("sample: send_arp wlan0 192.168.10.2 192.168.10.1\n");
-	
-	return;
 }
 
