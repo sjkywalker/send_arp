@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 		{
 			puts("Failed!");
 			puts("[-] Failed to send packet");
-			puts("[*] Exiting program with return -1");
+			puts("[*] Exiting program with -1");
 			pcap_perror(handle, 0);	
 			return -1;
 		}
