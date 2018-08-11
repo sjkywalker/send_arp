@@ -190,6 +190,7 @@ int main(int argc, char *argv[])
 	free(arp_request);        free(arp_request_packet);
 	free(arp_reply);          free(arp_reply_packet);
 
+	printf("Exiting program with 0");
 
 	return 0;
 }
