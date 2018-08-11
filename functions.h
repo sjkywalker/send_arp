@@ -22,7 +22,7 @@
 
 
 
-/* ARP protocol opcodes in net/if_arp.h */
+/* ARP protocol pre-defined variables in net/if_arp.h */
 
 
 #define ARP_HTYPE_ETH 1
@@ -35,6 +35,8 @@
 
 void usage(void);
 
+
+#pragma pack(push, 1)
 
 typedef struct _my_arp_hdr
 {
@@ -49,11 +51,13 @@ typedef struct _my_arp_hdr
 	uint32_t TPA;		// target protocol address
 } my_arp_hdr;
 
-typedef struct _my_etharp_pckt
+typedef struct _my_etharp_hdr
 {
 	uint8_t    DMAC[6];
 	uint8_t    SMAC[6];
 	uint16_t   ETHTYPE;
 	my_arp_hdr ARPHDR;
-} my_etharp_pckt;
+} my_etharp_hdr;
+
+#pragma pack(pop)
 
