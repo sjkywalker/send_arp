@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 	if (handle == NULL)
 	{
 		fprintf(stderr, "[-] Couldn't open device %s: %s\n", dev, errbuf);
+		puts("[*] Exiting program with -1");
 		return -1;
 	}
 
