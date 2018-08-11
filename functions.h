@@ -64,6 +64,5 @@ void PRINT_MAC(uint8_t *MAC_array);
 void MAKE_ARPREQ_STRUCT(my_etharp_hdr *arp_struct, uint8_t *source_MAC_array, uint32_t source_IP_int, uint32_t destination_IP_int);
 void MAKE_ARPREP_STRUCT(my_etharp_hdr *arp_struct, uint8_t *source_MAC_array, uint32_t source_IP_int, uint8_t *destination_MAC_array, uint32_t destination_IP_int, uint32_t target_IP_int);
 void STRUCT2PACKET(uint8_t *arp_packet, my_etharp_hdr *arp_struct);
-void SEND_ARPREQ(uint8_t *arp_request_packet);
-void SEND_ARPREP(uint8_t *arp_reply_packet);
+
 
