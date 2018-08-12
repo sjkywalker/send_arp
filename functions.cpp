@@ -11,9 +11,40 @@ void PRINT_USAGE(void)
 	return;
 }
 
+void GET_MY_IP(char *attacker_IP_char, char *interface)
+{
+	int n;
+	struct ifreq ifr;
+
+	n = socket(AF_INET, SOCK_DGRAM, 0);
+	
+	ifr.ifr_addr.sa_family = AF_INET;
+	
+	strncpy(ifr.ifr_name, interface, IFNAMSIZ - 1);
+	ioctl(n, SIOCGIFADDR, &ifr);
+	close(n);
+
+	strcpy(attacker_IP_char, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+	return;
+}
+
 void PRINT_IP(char *IP_char)
 {
 	printf("%s", IP_char);
+	return;
+}
+
+void GET_MY_MAC(uint8_t *attacker_MAC_array, char *interface)
+{
+	struct ifreq s;
+	int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
+	
+	strcpy(s.ifr_name, interface);
+	if (!ioctl(fd, SIOCGIFHWADDR, &s))
+	{
+		memcpy(attacker_MAC_array, s.ifr_addr.sa_data, 6 * sizeof(uint8_t));
+	}
+
 	return;
 }
 
@@ -68,4 +99,29 @@ void STRUCT2PACKET(uint8_t *arp_packet, my_etharp_hdr *arp_struct)
 	return;
 }
 
+int GET_SENDER_MAC(uint8_t *sender_MAC_array, int sender_IP_int, pcap_t *handle, struct pcap_pkthdr *header, const uint8_t *packet)
+{
+	while (1)
+	{
+		int res = pcap_next_ex(handle, &header, &packet);
+
+		if (res == 0)               { continue; }
+		if (res == -1 || res == -2) { return 0; }
+
+		uint16_t PCKT_ETHERTYPE = (packet[12] << 8) | packet[13];
+		if (PCKT_ETHERTYPE != ETHERTYPE_ARP) { continue; }
+
+		uint16_t PCKT_ARPOP = (packet[20] << 8) | packet[21];
+		if (PCKT_ARPOP != ARPOP_REPLY) { continue; }
+
+		uint32_t PCKT_ARPSPA = (packet[31] << 24) | (packet[30] << 16) | (packet[29] << 8) | (packet[28]);
+		if (PCKT_ARPSPA != sender_IP_int) { continue; }
+		
+		memcpy(sender_MAC_array, (packet + 22), 6 * sizeof(uint8_t));
+		
+		break;
+	}
+	
+	return 1; 
+}
 

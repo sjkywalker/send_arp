@@ -27,14 +27,17 @@ This program poisons sender's ARP table, and redirects outgoing packets from sen
 
 ### Development Environment
 
-```txt
+```bash
+user@ubuntu:~/send_arp$ uname -a
 Linux ubuntu 4.15.0-30-generic #32~16.04.1-Ubuntu SMP Thu Jul 26 20:25:39 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+user@ubuntu:~/send_arp$ g++ --version
+g++ (Ubuntu 5.4.0-6ubuntu1~16.04.10) 5.4.0 20160609
 ```
 
 ### Prerequisites
 
-This program includes the following headers. Make sure you have the right package.
-
+This program includes the following headers. Make sure you have the right packages.
 ```c
 #include <stdio.h>
 #include <stdint.h>
@@ -54,6 +57,15 @@ This program includes the following headers. Make sure you have the right packag
 ```
 
 ## Running the program
+
+### Build
+
+Simply hit 'make' to create object files and executable.
+```bash
+make
+```
+
+### Run
 
 Format
 ```bash

