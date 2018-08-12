@@ -1,3 +1,5 @@
+/* Copyright © 2018 James Sung. All rights reserved. */
+
 #pragma once
 
 #include <stdio.h>

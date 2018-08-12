@@ -1,24 +1,4 @@
-/*======================================================================*/
-/* Program Description */
-/* 
- * Fake sender(=victim)'s ARP table by sending arp packets
- * sender ip == victim ip
- * target ip usually set as gateway ip
- * 
- * Send user defined buffer as packet, using pcap_sendpacket()
- * Find attacker(=you)'s MAC information (@google)
- * 
- * Three entities: attacker, sender (victim), target (gateway)
- * 
- * 1. Find attacker IP address
- * 2. Find attacker MAC address
- * 3. Send ARP request and receive ARP reply to identify target MAC address
- * 4. Send ARP reply to target
- *
- * Copyright © 2018 James Sung. All rights reserved.
- */
-/*======================================================================*/
-
+/* Copyright © 2018 James Sung. All rights reserved. */
 
 #include "functions.h"
 

@@ -1,7 +1,0 @@
-Get my IP address
-* https://www.sanfoundry.com/c-program-get-ip-address/
-
-Get my MAC address
-* https://stackoverflow.com/questions/1779715/how-to-get-mac-address-of-your-machine-using-a-c-program
-
-

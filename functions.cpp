@@ -1,3 +1,5 @@
+/* Copyright © 2018 James Sung. All rights reserved. */
+
 #include "functions.h"
 
 
