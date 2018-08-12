@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	if (!GET_SENDER_MAC(sender_MAC_array, sender_IP_int, handle, header, packet))
 	{
 		puts("[-] Fail!");
-		puts("[-] Exiting with -1");
+		puts("[*] Exiting with -1");
 		return -1;
 	}
 	puts("DONE"); puts("");
