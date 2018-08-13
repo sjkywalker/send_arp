@@ -23,7 +23,7 @@
 #include <sys/ioctl.h>
 
 
-/* ARP protocol pre-defined variables in net/if_arp.h */
+/* ARP protocol pre-defined macros in net/if_arp.h */
 
 
 #define ARP_HTYPE_ETH 1
@@ -73,3 +73,5 @@ void MAKE_ARPREP_STRUCT(my_etharp_hdr *arp_struct, uint8_t *source_MAC_array, ui
 void STRUCT2PACKET(uint8_t *arp_packet, my_etharp_hdr *arp_struct);
 
 int GET_SENDER_MAC(uint8_t *sender_MAC_array, int sender_IP_int, pcap_t *handle, pcap_pkthdr *header, const uint8_t *packet);
+
+int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char);
