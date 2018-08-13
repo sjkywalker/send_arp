@@ -2,7 +2,7 @@
 
 #include "functions.h"
 
-// arp_spoof <interface> <sender ip 1> <target ip 1> [<sender ip 2> <target ip 2>...]
+// send_arp <interface> <sender ip> <target ip>
 
 int main(int argc, char *argv[])
 {

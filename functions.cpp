@@ -209,7 +209,7 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 		puts("[*] Exiting program with -1");
 		return -1;
 	}
-	puts("DONE"); puts("");
+	puts("Done"); puts("");
 
 	printf("[Sender   MAC Address] "); PRINT_MAC(sender_MAC_array);
 	puts(""); puts("");	
@@ -235,6 +235,7 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 
 	else
 	{
+		printf("[+] %d packets to go!", count); puts("");
 		for (int i = 0; i < count; i++)
 		{
 			pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
@@ -243,7 +244,6 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 		}
 		printf("[+] Sent %d ARP replies!", count); puts("");
 	}
-
 
 
 	pcap_close(handle);
@@ -255,3 +255,4 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 
 	return 0;
 }
+
