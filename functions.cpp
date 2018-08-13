@@ -225,6 +225,7 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 
 	if (count < 0)
 	{
+		puts("[+] Sending packets until interrupt...");
 		while(1)
 		{
 			pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
