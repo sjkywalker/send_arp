@@ -243,7 +243,7 @@ int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count)
 		printf("[+] %d packets to go!", count); puts("");
 		for (int i = 0; i < count; i++)
 		{
-			pcap_sendpacket(handle, arp_reply_packet, sizeof(my_etharp_hdr));
+			pcap_sendpacket(handle, (uint8_t *)arp_reply, sizeof(my_etharp_hdr));
 			puts(".");
 			sleep(1);
 		}
