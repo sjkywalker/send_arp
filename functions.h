@@ -22,6 +22,7 @@
 
 #include <sys/ioctl.h>
 
+#include <time.h>
 
 /* ARP protocol pre-defined macros in net/if_arp.h */
 
@@ -70,8 +71,6 @@ void PRINT_MAC(uint8_t *MAC_array);
 void MAKE_ARPREQ_STRUCT(my_etharp_hdr *arp_struct, uint8_t *source_MAC_array, uint32_t source_IP_int, uint32_t destination_IP_int);
 void MAKE_ARPREP_STRUCT(my_etharp_hdr *arp_struct, uint8_t *source_MAC_array, uint32_t source_IP_int, uint8_t *destination_MAC_array, uint32_t destination_IP_int, uint32_t target_IP_int);
 
-void STRUCT2PACKET(uint8_t *arp_packet, my_etharp_hdr *arp_struct);
-
-int GET_SENDER_MAC(uint8_t *sender_MAC_array, int sender_IP_int, pcap_t *handle, pcap_pkthdr *header, const uint8_t *packet);
+bool GET_SENDER_MAC(uint8_t *sender_MAC_array, int sender_IP_int, pcap_t *handle, pcap_pkthdr *header, const uint8_t *packet);
 
 int SEND_ARP(char *dev, char *sender_IP_char, char *target_IP_char, int count);
